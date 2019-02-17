@@ -80,9 +80,11 @@ const getPathForDate = date => {
   )
 }
 const getCssClassForDate = (date, month) => {
-  if (date.getMonth() !== month) return 'date-inactive'
-  if (date.getDay() === 0) return 'date-holiday'
-  if (date.getDay() === 6) return 'date-saturday'
+  const defaultClass = 'cell-date'
+  if (date.getMonth() !== month) return defaultClass + ' date-inactive'
+  if (date.getDay() === 0) return defaultClass + ' date-holiday'
+  if (date.getDay() === 6) return defaultClass + ' date-saturday'
+  return defaultClass
 }
 </script>
 
@@ -129,6 +131,14 @@ div.calendar-contents {
 label.calendar-date {
   font-size: 20px;
   font-weight: 700;
+}
+
+.cell-date {
+  transition: 1s;
+}
+
+.cell-date:hover {
+  background: #eaecee;
 }
 
 .date-inactive {
