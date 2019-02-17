@@ -10,20 +10,24 @@
         <table class="table table-bordered">
           <thead>
             <tr>
-              <td>Sun</td>
+              <td class="date-holiday">
+                Sun
+              </td>
               <td>Mon</td>
               <td>Tue</td>
               <td>Wed</td>
               <td>Thu</td>
               <td>Fri</td>
-              <td>Sat</td>
+              <td class="date-saturday">
+                Sat
+              </td>
             </tr>
           </thead>
           <tbody>
             <tr v-for="week in createCalendar($route.params.year, $route.params.month)" :key="week.id">
-              <td v-for="item in week" :key="item.id">
-                <div class="calendar-cell">
-                  <span class="date-label">{{ item }}</span>
+              <td v-for="item in week" :key="item.id" :class="item[1]">
+                <div>
+                  <label class="calendar-date">{{ item[0] }}</label>
                 </div>
               </td>
             </tr>
@@ -53,14 +57,15 @@ export default {
       const initialYear = parseInt(year)
       const initialMonth = parseInt(month) - 1
       const initialDate = new Date(initialYear, initialMonth)
-      return Array.from(Array(7).keys(), n =>
-        Array.from(Array(7).keys(), day =>
-          new Date(
+      return Array.from(Array(6).keys(), n =>
+        Array.from(Array(7).keys(), day => {
+          const date = new Date(
             initialYear,
             initialMonth,
             1 - initialDate.getDay() + n * 7 + day
-          ).getDate()
-        )
+          )
+          return [date.getDate(), getCssClassForDate(date, initialMonth)]
+        })
       )
     }
   }
@@ -73,6 +78,11 @@ const getPathForDate = date => {
     '/' +
     (date.getMonth() + 1).toString()
   )
+}
+const getCssClassForDate = (date, month) => {
+  if (date.getMonth() !== month) return 'date-inactive'
+  if (date.getDay() === 0) return 'date-holiday'
+  if (date.getDay() === 6) return 'date-saturday'
 }
 </script>
 
@@ -88,6 +98,7 @@ div.calendar-header {
   justify-content: space-between;
   margin: 12px 0;
   align-items: center;
+  font-weight: 500;
 }
 
 label#calendar-year-month {
@@ -113,5 +124,23 @@ div.calendar-contents {
   width: 100%;
   justify-content: center;
   max-width: 1200px;
+}
+
+label.calendar-date {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.date-inactive {
+  background: #f4f5f5;
+  color: #626466;
+}
+
+.date-saturday {
+  color: #2020ca;
+}
+
+.date-holiday {
+  color: #ca2020;
 }
 </style>
