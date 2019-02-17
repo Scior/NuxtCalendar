@@ -2,15 +2,34 @@
   <div class="Calendar">
     <div class="container">
       <div class="calendar-header">
-        <a :href="getPreviousMonthPath($route.params.year, $route.params.month)">先月</a>
-        <label>{{ $route.params.year }}年{{ $route.params.month }}月</label>
-        <a :href="getNextMonthPath($route.params.year, $route.params.month)">来月</a>
+        <a class="calendar-link" :href="getPreviousMonthPath($route.params.year, $route.params.month)">&lt; Previous</a>
+        <label id="calendar-year-month">{{ $route.params.year }}/{{ $route.params.month }}</label>
+        <a class="calendar-link" :href="getNextMonthPath($route.params.year, $route.params.month)">Next &gt;</a>
       </div>
-      <ul>
-        <li v-for="item in createCalendar($route.params.year, $route.params.month)" :key="item.id">
-          {{ item }}
-        </li>
-      </ul>
+      <div class="calendar-contents">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <td>Sun</td>
+              <td>Mon</td>
+              <td>Tue</td>
+              <td>Wed</td>
+              <td>Thu</td>
+              <td>Fri</td>
+              <td>Sat</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="week in createCalendar($route.params.year, $route.params.month)" :key="week.id">
+              <td v-for="item in week" :key="item.id">
+                <div class="calendar-cell">
+                  <span class="date-label">{{ item }}</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -32,7 +51,7 @@ export default {
     },
     createCalendar: (year, month) => {
       const initialYear = parseInt(year)
-      const initialMonth = parseInt(month)
+      const initialMonth = parseInt(month) - 1
       const initialDate = new Date(initialYear, initialMonth)
       return Array.from(Array(7).keys(), n =>
         Array.from(Array(7).keys(), day =>
@@ -58,8 +77,41 @@ const getPathForDate = date => {
 </script>
 
 <style>
-.calendar-header {
+@import url('https://fonts.googleapis.com/css?family=Raleway:500,700');
+
+body {
+  font-family: 'Raleway', sans-serif;
+}
+
+div.calendar-header {
   display: flex;
   justify-content: space-between;
+  margin: 12px 0;
+  align-items: center;
+}
+
+label#calendar-year-month {
+  font-size: 20px;
+}
+
+.calendar-link {
+  transition: 0.8s;
+  color: #202528;
+  padding: 0 8px;
+  border-bottom: solid 1px transparent;
+}
+
+.calendar-link:hover {
+  color: #202528;
+  padding: 0 8px;
+  text-decoration: none;
+  border-bottom: solid 1px #202528;
+}
+
+div.calendar-contents {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  max-width: 1200px;
 }
 </style>
